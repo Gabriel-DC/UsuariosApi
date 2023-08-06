@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Authentication;
 using UsuariosApi.Data;
 using UsuariosApi.Data.Dtos;
 using UsuariosApi.Models;
@@ -36,15 +37,16 @@ public class UserController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> LoginAsync(LoginUserDto loginUserDto)
     {
-        Microsoft.AspNetCore.Identity.SignInResult result = await _userService.LoginAsync(loginUserDto);
+        try
+        {
+            string token = await _userService.LoginAsync(loginUserDto);
 
-        if (!result.Succeeded)
-            return BadRequest("Falha ao Autenticar");
-
-        _tokenService.GenerateToken();
-
-
-        return Ok("User Logged");
+            return Ok(token);
+        }
+        catch (AuthenticationException ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
 }
