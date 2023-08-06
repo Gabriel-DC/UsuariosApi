@@ -13,10 +13,12 @@ namespace UsuariosApi.Controllers;
 public class UserController : ControllerBase
 {
     private readonly UserService _userService;
+    private readonly TokenService _tokenService;
 
-    public UserController(UserService userService)
+    public UserController(UserService userService, TokenService tokenService)
     {
         _userService = userService;
+        _tokenService = tokenService;
     }
 
 
@@ -38,6 +40,9 @@ public class UserController : ControllerBase
 
         if (!result.Succeeded)
             return BadRequest("Falha ao Autenticar");
+
+        _tokenService.GenerateToken();
+
 
         return Ok("User Logged");
     }
