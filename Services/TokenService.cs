@@ -15,7 +15,8 @@ public class TokenService
         {
             new Claim("id",  user.Id),
             new Claim("username", user.UserName!),
-            new Claim(ClaimTypes.DateOfBirth, user.BirthDate.ToString())
+            new Claim(ClaimTypes.DateOfBirth, user.BirthDate.ToString()),
+            new Claim("loginUtcTimeStamp", DateTime.UtcNow.ToString())
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("9SHA8SHA7SHA6SHA5SHA4SHA3SHA2SHA1SHA00"));
