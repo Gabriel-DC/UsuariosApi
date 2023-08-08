@@ -11,6 +11,9 @@ namespace UsuariosApi.Authorization
             Claim? birthDateClaim = context
                 .User.FindFirst(claim => claim.Type == ClaimTypes.DateOfBirth);
 
+            Claim? loginTime = context
+                .User.FindFirst(claim => claim.Type == "loginUtcTimeStamp");
+
             if (birthDateClaim is null)
                 return Task.CompletedTask;
 

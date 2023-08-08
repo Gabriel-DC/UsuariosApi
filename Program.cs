@@ -1,7 +1,10 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using UsuariosApi.Authorization;
 using UsuariosApi.Authorization.Policies;
 using UsuariosApi.Data;
@@ -30,6 +33,26 @@ builder.Services.AddDataProtection().PersistKeysToFileSystem(new DirectoryInfo(P
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme =
+        JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters =
+        new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey =
+                new SymmetricSecurityKey
+                    (Encoding.UTF8.GetBytes("9SHA8SHA7SHA6SHA5SHA4SHA3SHA2SHA1SHA00")),
+            ValidateAudience = false,
+            ValidateIssuer = false,
+            ClockSkew = TimeSpan.Zero
+        };
+});
+
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("MinimumAge", policy
@@ -56,6 +79,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
