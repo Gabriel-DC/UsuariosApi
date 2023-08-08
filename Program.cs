@@ -18,7 +18,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<UserDbContext>
     (opts =>
     {
-        string? userConnectionString = builder.Configuration.GetConnectionString("UserConnection");
+        string? userConnectionString = builder.Configuration["ConnectionStrings:UserConnection"];
         opts.UseMySql(userConnectionString, ServerVersion.AutoDetect(userConnectionString));
     });
 
@@ -46,7 +46,7 @@ builder.Services.AddAuthentication(options =>
             ValidateIssuerSigningKey = true,
             IssuerSigningKey =
                 new SymmetricSecurityKey
-                    (Encoding.UTF8.GetBytes("9SHA8SHA7SHA6SHA5SHA4SHA3SHA2SHA1SHA00")),
+                    (Encoding.UTF8.GetBytes(builder.Configuration["SymmetricSecurityKey"])),
             ValidateAudience = false,
             ValidateIssuer = false,
             ClockSkew = TimeSpan.Zero
